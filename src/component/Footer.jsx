@@ -1,15 +1,18 @@
 // Footer.js
 import React from 'react';
 import {
-  Paper,
-  Grid,
-  Typography,
-  Button,
-  Box,
-  Fade,
-  alpha
+    Paper,
+    Grid,
+    Typography,
+    Box,
+    Fade,
+    IconButton
 } from '@mui/material';
 import { keyframes } from '@emotion/react';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import InstagramIcon from '@mui/icons-material/Instagram';
 
 const fadeInUp = keyframes`
   from { opacity: 0; transform: translateY(30px); }
@@ -17,88 +20,128 @@ const fadeInUp = keyframes`
 `;
 
 const Footer = ({ isVisible }) => {
-  const menuItems = [
-    { title: 'ABOUT US', items: ['About Us', 'Careers', 'Contact Us', 'Grievance'] },
-    { title: 'INVESTORS', items: ['KYC/TPIN', 'Folio Status', 'IPO Application Status', 'Annexure'] },
-    { title: 'CLIENTS', items: ['Features', 'Login', 'Annexure', 'Corporate Advisory Services'] },
-    { title: 'MERCHANT BANKERS', items: ['Login'] },
-    { title: 'LEGAL AND PRIVACY', items: ['Terms of Use', 'Privacy Policy', 'SEBI Guidelines', 'Guidelines'] }
-  ];
-
-  return (
-    <Fade in={isVisible} timeout={2000}>
-      <Paper
-        elevation={0}
-        sx={{
-          p: 3,
-          backgroundColor: 'rgba(255, 255, 255, 0.85)',
-          backdropFilter: 'blur(10px)',
-          borderRadius: 2,
-          border: '1px solid rgba(0, 0, 0, 0.08)',
-          transform: 'translateY(20px)',
-          animation: `${fadeInUp} 0.8s ease-out 0.5s forwards`,
-          opacity: 0
-        }}
-      >
-        <Grid container spacing={4}>
-          {menuItems.map((section, index) => (
-            <Grid item xs={6} md={2.4} key={index}>
-              <Typography
-                variant="subtitle2"
-                gutterBottom
-                fontWeight="bold"
-                color="primary"
+    return (
+        <Fade in={isVisible} timeout={2000}>
+            <Paper
+                elevation={0}
                 sx={{
-                  opacity: 0,
-                  animation: `${fadeInUp} 0.5s ease-out ${index * 0.1 + 0.8}s forwards`
+                    p: 4,
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: 0,
+                    borderTop: '1px solid rgba(0, 0, 0, 0.08)',
+                    transform: 'translateY(20px)',
+                    animation: `${fadeInUp} 0.8s ease-out 0.5s forwards`,
+                    opacity: 0
                 }}
-              >
-                {section.title}
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                {section.items.map((item, itemIndex) => (
-                  <Button
-                    key={itemIndex}
-                    size="small"
-                    sx={{
-                      justifyContent: 'flex-start',
-                      color: 'text.secondary',
-                      textTransform: 'none',
-                      fontSize: '0.8rem',
-                      py: 0.5,
-                      opacity: 0,
-                      animation: `${fadeInUp} 0.5s ease-out ${(index * 0.1 + itemIndex * 0.05 + 0.9)}s forwards`,
-                      transition: 'all 0.2s ease',
-                      '&:hover': {
-                        color: 'primary.main',
-                        backgroundColor: 'transparent',
-                        transform: 'translateX(5px)'
-                      }
-                    }}
-                  >
-                    {item}
-                  </Button>
-                ))}
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
+            >
+                {/* KFintech Brand Section */}
+                <Box sx={{ textAlign: 'center', mb: 4 }}>
+                    <Typography variant="h4" component="div" fontWeight="bold" color="#2c3e50" gutterBottom>
+                        KFintech
+                    </Typography>
+                    <Typography variant="subtitle1" color="#6c757d" fontWeight="bold" gutterBottom>
+                        EXPERIENCE TRANSFORMATION
+                    </Typography>
+                    <Typography variant="body2" color="#6c757d" sx={{ maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}>
+                        A pioneer in the financial sector KFintech's corporate registry services have made a mark in the market for their innovative and technology oriented service offerings.
+                    </Typography>
+                </Box>
 
-        <Box sx={{
-          mt: 4,
-          textAlign: 'center',
-          pt: 2,
-          borderTop: '1px solid rgba(0, 0, 0, 0.08)',
-          opacity: 0,
-          animation: `${fadeInUp} 0.5s ease-out 1.5s forwards`
-        }}>
-          <Typography variant="body2" color="textSecondary">
-            Branch - Bank Mandate | Kenink
-          </Typography>
-        </Box>
-      </Paper>
-    </Fade>
-  );
+                <Grid container spacing={4} sx={{ mb: 4 }}>
+                    {/* INVESTORS Column */}
+                    <Grid item xs={12} md={3}>
+                        <Typography variant="subtitle2" fontWeight="bold" color="#2c3e50" gutterBottom>
+                            INVESTORS
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                            {['Kprism', 'Form 15G/15H/10H', 'IPO Allocation Status', 'evoting', 'Video Conferencing', 'Bonds - Bank Mandate'].map((item, index) => (
+                                <Typography key={index} variant="body2" color="#6c757d" sx={{ cursor: 'pointer', '&:hover': { color: '#384486' } }}>
+                                    {item}
+                                </Typography>
+                            ))}
+                        </Box>
+                    </Grid>
+
+                    {/* CLIENTS Column */}
+                    <Grid item xs={12} md={3}>
+                        <Typography variant="subtitle2" fontWeight="bold" color="#2c3e50" gutterBottom>
+                            CLIENTS
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                            {['FINTRAK', 'Corporate Advisory Services'].map((item, index) => (
+                                <Typography key={index} variant="body2" color="#6c757d" sx={{ cursor: 'pointer', '&:hover': { color: '#384486' } }}>
+                                    {item}
+                                </Typography>
+                            ))}
+                        </Box>
+                    </Grid>
+
+                    {/* MERCHANT BANKERS Column */}
+                    <Grid item xs={12} md={3}>
+                        <Typography variant="subtitle2" fontWeight="bold" color="#2c3e50" gutterBottom>
+                            MERCHANT BANKERS
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                            {['Kreation', 'Kosmic'].map((item, index) => (
+                                <Typography key={index} variant="body2" color="#6c757d" sx={{ cursor: 'pointer', '&:hover': { color: '#384486' } }}>
+                                    {item}
+                                </Typography>
+                            ))}
+                        </Box>
+                    </Grid>
+
+                    {/* LEGAL and PRIVACY Column */}
+                    <Grid item xs={12} md={3}>
+                        <Typography variant="subtitle2" fontWeight="bold" color="#2c3e50" gutterBottom>
+                            LEGAL and PRIVACY
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                            {['Terms of Use', 'Privacy Policy', 'RTA SEBI Guidelines', 'Disclosures'].map((item, index) => (
+                                <Typography key={index} variant="body2" color="#6c757d" sx={{ cursor: 'pointer', '&:hover': { color: '#384486' } }}>
+                                    {item}
+                                </Typography>
+                            ))}
+                        </Box>
+                    </Grid>
+                </Grid>
+
+                {/* Social Media and Copyright */}
+                <Box sx={{
+                    textAlign: 'center',
+                    pt: 3,
+                    borderTop: '1px solid rgba(0, 0, 0, 0.08)',
+                    opacity: 0,
+                    animation: `${fadeInUp} 0.5s ease-out 1.5s forwards`
+                }}>
+                    {/* Social Media Icons */}
+                    <Box sx={{ mb: 2 }}>
+                        <Typography variant="body2" color="#6c757d" gutterBottom>
+                            Follow Us:
+                        </Typography>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+                            <IconButton size="small" sx={{ color: '#6c757d', '&:hover': { color: '#384486' } }}>
+                                <LinkedInIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton size="small" sx={{ color: '#6c757d', '&:hover': { color: '#384486' } }}>
+                                <TwitterIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton size="small" sx={{ color: '#6c757d', '&:hover': { color: '#384486' } }}>
+                                <FacebookIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton size="small" sx={{ color: '#6c757d', '&:hover': { color: '#384486' } }}>
+                                <InstagramIcon fontSize="small" />
+                            </IconButton>
+                        </Box>
+                    </Box>
+
+                    {/* Copyright */}
+                    <Typography variant="body2" color="#6c757d">
+                        © Copyright KFintech 2023 | All Rights Reserved.
+                    </Typography>
+                </Box>
+            </Paper>
+        </Fade>
+    );
 };
 
 export default Footer;

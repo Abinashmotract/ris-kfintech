@@ -335,7 +335,7 @@ export default function ISRForm() {
             </Box>
 
             {/* Authorization Section */}
-            <Box x={{ mb: 3 }}>
+            <Box x={{ mb: 4 }}>
                 <Typography variant="body2" color="textSecondary" paragraph>
                     * or any date as may be specified by the CBDT (DP: Depository Participant)
                 </Typography>
@@ -365,44 +365,51 @@ export default function ISRForm() {
                                         {[1, 2, 3, 4, 5].map((row) => (
                                             <TableRow key={row}>
                                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", textAlign: 'center' }}>{row}</TableCell>
-                                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                                    <TextField variant="outlined" size="small" fullWidth />
-                                                </TableCell>
-                                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                                    <FormControl fullWidth size="small">
-                                                        <Select>
-                                                            <MenuItem value="">Select Folio</MenuItem>
-                                                        </Select>
-                                                    </FormControl>
-                                                </TableCell>
-                                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                                    <FormControl fullWidth size="small">
-                                                        <Select>
-                                                            <MenuItem value="">No of Securities</MenuItem>
-                                                        </Select>
-                                                    </FormControl>
-                                                </TableCell>
-                                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                                    <FormControl fullWidth size="small">
-                                                        <Select>
-                                                            <MenuItem value="">Face Value</MenuItem>
-                                                        </Select>
-                                                    </FormControl>
-                                                </TableCell>
-                                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                                    <FormControl fullWidth size="small">
-                                                        <Select>
-                                                            <MenuItem value="">From - To</MenuItem>
-                                                        </Select>
-                                                    </FormControl>
-                                                </TableCell>
+                                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}></TableCell>
+                                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}> </TableCell>
+                                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}> </TableCell>
+                                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}></TableCell>
+                                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}></TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", fontWeight: 'bold', width: '8%', textAlign: 'center' }}></TableCell>
+                                            <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", fontWeight: 'bold', width: '22%' }}>
+                                                <FormControl size="small" sx={{ minWidth: 150 }}>
+                                                    <InputLabel id="company-select-label">Select Company</InputLabel>
+                                                    <Select labelId="company-select-label" defaultValue="" label="Select Company">
+                                                        <MenuItem value="" disabled>
+                                                            Select Company
+                                                        </MenuItem>
+                                                        <MenuItem value="idbi">IDBI FLEXI BONDS 2A - 2AF</MenuItem>
+                                                        <MenuItem value="company2">IDBI FLEXI BONDS 2A - 2AM</MenuItem>
+                                                        <MenuItem value="company3">IDBI FLEXI BONDS 2A - 2AR</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                            </TableCell>
+                                            <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", fontWeight: 'bold', width: '15%' }}>
+                                                <TextField variant="outlined" size="small" placeholder="Folio" fullWidth />
+                                            </TableCell>
+                                            <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", fontWeight: 'bold', width: '15%' }}>
+                                                <TextField variant="outlined" size="small" placeholder="No of Securit" fullWidth />
+                                            </TableCell>
+                                            <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", fontWeight: 'bold', width: '15%' }}>
+                                                <TextField variant="outlined" size="small" placeholder="Face Value" fullWidth />
+                                            </TableCell>
+                                            <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", fontWeight: 'bold', width: '25%' }}>
+                                                <TextField variant="outlined" size="small" placeholder="Form - To" fullWidth />
+                                            </TableCell>
+                                            <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", fontWeight: 'bold' }}>
+                                                <Button variant="contained" color="primary" sx={{ textTransform: 'none' }} size="small">Add</Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
                                 </Table>
                             </TableContainer>
 
-                            <Typography variant="body2" paragraph>
+                            <Typography variant="body2" paragraph sx={{ mt: 2 }}>
                                 in which I / We are the holder(s) (strike off what is not applicable).
                             </Typography>
 
@@ -415,68 +422,115 @@ export default function ISRForm() {
             </Box>
 
             {/* Section C */}
-            <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle1" gutterBottom>
-                    C. Documents Submitted
-                </Typography>
+            <Box sx={{ py: 4 }}>
                 <TableContainer>
                     <Table sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
                         <TableHead>
                             <TableRow>
-                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>#</TableCell>
-                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>Document</TableCell>
-                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>Instruction / Remark</TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", fontWeight: 'bold' }}></TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", fontWeight: 'bold' }}>Holder 1</TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", fontWeight: 'bold' }}>Holder 2</TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", fontWeight: 'bold' }}>Holder 3</TableCell>
                             </TableRow>
                         </TableHead>
 
                         <TableBody>
+                            {/* Signature Row */}
                             <TableRow>
-                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>1</TableCell>
-                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>PAN of holder(s)</TableCell>
-                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>Provide valid PAN linked with Aadhaar</TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>Signature</TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}></TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}></TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}></TableCell>
                             </TableRow>
+
+                            {/* Name Row */}
                             <TableRow>
-                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>2</TableCell>
-                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>Demat Account No.</TableCell>
-                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>Optional, provide CML</TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>Name</TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}></TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}></TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}></TableCell>
+                            </TableRow>
+
+                            {/* Full Address - Line 1 */}
+                            <TableRow>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>Full Address</TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                    <TextField variant="outlined" size="small" placeholder="Address Line 1" fullWidth />
+                                </TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                    <TextField variant="outlined" size="small" placeholder="Address Line 1" fullWidth />
+                                </TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                    <TextField variant="outlined" size="small" placeholder="Address Line 1" fullWidth />
+                                </TableCell>
+                            </TableRow>
+
+                            {/* Full Address - Line 2 */}
+                            <TableRow>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}></TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                    <TextField variant="outlined" size="small" placeholder="Address Line 2" fullWidth />
+                                </TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                    <TextField variant="outlined" size="small" placeholder="Address Line 2" fullWidth />
+                                </TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                    <TextField variant="outlined" size="small" placeholder="Address Line 2" fullWidth />
+                                </TableCell>
+                            </TableRow>
+
+                            {/* Full Address - Line 3 */}
+                            <TableRow>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}></TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                    <TextField variant="outlined" size="small" placeholder="Address Line 3" fullWidth />
+                                </TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                    <TextField variant="outlined" size="small" placeholder="Address Line 3" fullWidth />
+                                </TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                    <TextField variant="outlined" size="small" placeholder="Address Line 3" fullWidth />
+                                </TableCell>
+                            </TableRow>
+
+                            {/* PIN Code and City Row */}
+                            <TableRow>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>PIN Code</TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={6}>
+                                            <TextField variant="outlined" size="small" placeholder="City Name" fullWidth />
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <TextField variant="outlined" size="small" placeholder="PIN Code" fullWidth />
+                                        </Grid>
+                                    </Grid>
+                                </TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={6}>
+                                            <TextField variant="outlined" size="small" placeholder="City Name" fullWidth />
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <TextField variant="outlined" size="small" placeholder="PIN Code" fullWidth />
+                                        </Grid>
+                                    </Grid>
+                                </TableCell>
+                                <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={6}>
+                                            <TextField variant="outlined" size="small" placeholder="City Name" fullWidth />
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <TextField variant="outlined" size="small" placeholder="PIN Code" fullWidth />
+                                        </Grid>
+                                    </Grid>
+                                </TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>
                 </TableContainer>
             </Box>
-
-            {/* Signature Section */}
-            <Paper sx={{ p: 2 }}>
-                <Typography variant="subtitle1" gutterBottom>
-                    Declaration: All the above facts stated are true and correct.
-                </Typography>
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Signature</TableCell>
-                                <TableCell>Holder 1</TableCell>
-                                <TableCell>Holder 2</TableCell>
-                                <TableCell>Holder 3</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            <TableRow>
-                                <TableCell>Full Address</TableCell>
-                                <TableCell>
-                                    <TextField fullWidth label="Address Line 1" margin="dense" />
-                                </TableCell>
-                                <TableCell>
-                                    <TextField fullWidth label="Address Line 1" margin="dense" />
-                                </TableCell>
-                                <TableCell>
-                                    <TextField fullWidth label="Address Line 1" margin="dense" />
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Paper>
         </Box>
     );
 }
