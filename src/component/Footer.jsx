@@ -47,7 +47,7 @@ const Footer = ({ isVisible }) => {
                     </Typography>
                 </Box>
 
-                <Grid container spacing={4} sx={{ mb: 4 }}>
+                <Grid container spacing={4} sx={{ mb: 4, display: 'flex', justifyContent: 'space-evenly' }}>
                     {/* INVESTORS Column */}
                     <Grid item xs={12} md={3}>
                         <Typography variant="subtitle2" fontWeight="bold" color="#2c3e50" gutterBottom>

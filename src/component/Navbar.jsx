@@ -16,6 +16,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import kfintechlogo from '../../src/assets/kfintech_logo.svg';
+import { Link } from 'react-router-dom';
 
 const Navbar = ({ isVisible, toggleDrawer }) => {
   const theme = useTheme();
@@ -49,9 +50,9 @@ const Navbar = ({ isVisible, toggleDrawer }) => {
 
             {/* Logo on Left with animation */}
             <Grow in={isVisible} timeout={1000}>
-              <Box>
+              <Link to="/">
                 <img src={kfintechlogo} alt="KFintech Logo" height="100" width="240px" />
-              </Box>
+              </Link>
             </Grow>
 
             {/* Spacer pushes Home button to the right */}
