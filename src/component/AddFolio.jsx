@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Box, IconButton, Typography, } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-// src/component/AddFolio.jsx
 const AddFolio = ({ open, onClose, onSave }) => {
     const [folio, setFolio] = useState("");
     const [certificate, setCertificate] = useState("");
@@ -16,7 +15,9 @@ const AddFolio = ({ open, onClose, onSave }) => {
         setError(false);
 
         // Pass data to parent
-        onSave({ folio, certificate });
+        if (onSave) {
+            onSave({ folio, certificate });
+        }
         onClose();
     };
 

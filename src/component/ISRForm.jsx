@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Box,
     Typography,
@@ -20,15 +20,157 @@ import {
 } from "@mui/material";
 import DownloadIcon from '@mui/icons-material/Download';
 import AddFolio from "./AddFolio";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 const ISRForm = () => {
     const [openFolioDialog, setOpenFolioDialog] = useState(false);
+    
+    // Form state management
+    const [formData, setFormData] = useState({
+        // Section A - Request checkboxes
+        pan: false,
+        bankDetails: false,
+        signature: false,
+        mobileNumber: false,
+        emailId: false,
+        address: false,
+        
+        // Section B - Security Details
+        selectedCompany: '',
+        folioNumber: '',
+        certificateNumber: '',
+        firstHolder: '',
+        secondHolder: '',
+        thirdHolder: '',
+        
+        // Section C - Documents
+        panFirstHolder: '',
+        panSecondHolder: '',
+        panThirdHolder: '',
+        panValidLinked: false,
+        panNotValidLinked: false,
+        dematAccount: '',
+        
+        // Proof of Address checkboxes
+        uidAadhaar: false,
+        passportLease: false,
+        flatMaintenance: false,
+        utilityBills: false,
+        identityCard: false,
+        fiiPowerOfAttorney: false,
+        spouseProof: false,
+        clientMasterList: false,
+        
+        // Bank Details
+        ifscCode: '',
+        accountNumber: '',
+        bankName: '',
+        branchName: '',
+        cancelledCheque: false,
+        bankPassbook: false,
+        
+        // Contact Details
+        emailAddress: '',
+        mobileNumber: '',
+        
+        // Authorization Table
+        authorizationFolios: [],
+        
+        // Signature Section
+        holder1Address1: '',
+        holder1Address2: '',
+        holder1Address3: '',
+        holder1City: '',
+        holder1PinCode: '',
+        holder2Address1: '',
+        holder2Address2: '',
+        holder2Address3: '',
+        holder2City: '',
+        holder2PinCode: '',
+        holder3Address1: '',
+        holder3Address2: '',
+        holder3Address3: '',
+        holder3City: '',
+        holder3PinCode: ''
+    });
+
+    // Load form data from localStorage on component mount
+    useEffect(() => {
+        const savedData = localStorage.getItem('isrFormData');
+        if (savedData) {
+            setFormData(JSON.parse(savedData));
+        }
+    }, []);
+
+    // Save form data to localStorage whenever formData changes
+    useEffect(() => {
+        localStorage.setItem('isrFormData', JSON.stringify(formData));
+    }, [formData]);
+
+    const handleInputChange = (field, value) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
+    const handleCheckboxChange = (field) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: !prev[field]
+        }));
+    };
 
     const handleOpen = () => setOpenFolioDialog(true);
     const handleClose = () => setOpenFolioDialog(false);
 
+    const handleAddFolio = (folioData) => {
+        setFormData(prev => ({
+            ...prev,
+            folioNumber: folioData.folio,
+            certificateNumber: folioData.certificate
+        }));
+    };
+
+    const handleAddAuthorizationFolio = () => {
+        // This will be implemented when we add the authorization table functionality
+    };
+
+    const downloadPDF = async () => {
+        const element = document.getElementById('isr-form-content');
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff'
+        });
+        
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        const imgWidth = 210;
+        const pageHeight = 295;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        
+        let position = 0;
+        
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+        
+        pdf.save('ISR-Form.pdf');
+    };
+
     return (
-        <Box sx={{ maxWidth: "1000px", mx: "auto", p: 3 }}>
+        <Box id="isr-form-content" sx={{ maxWidth: "1000px", mx: "auto", p: 3 }}>
             {/* Heading */}
             <Typography variant="h6" align="center" gutterBottom sx={{ color: '#212529', fontWeight: 'bold', fontSize: '24pt' }}>
                 Form ISR – 1
@@ -42,7 +184,6 @@ const ISRForm = () => {
             <Typography variant="body2" align="center" gutterBottom sx={{ fontSize: '12pt' }}>
                 [For Securities (Shares / Debentures / Bonds, etc.) of listed companies held in physical form]
             </Typography>
-            {/* Section A */}
             <Box sx={{ py: 4 }}>
                 {/* Section A */}
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
@@ -60,18 +201,44 @@ const ISRForm = () => {
                         <Table sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
                             <TableBody>
                                 <TableRow>
-                                    {['PAN', 'Bank Details', 'Signature'].map((item) => (
-                                        <TableCell key={item} sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                            <FormControlLabel control={<Checkbox />} label={item} />
-                                        </TableCell>
-                                    ))}
+                                    <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                        <FormControlLabel 
+                                            control={<Checkbox checked={formData.pan} onChange={() => handleCheckboxChange('pan')} />} 
+                                            label="PAN" 
+                                        />
+                                    </TableCell>
+                                    <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                        <FormControlLabel 
+                                            control={<Checkbox checked={formData.bankDetails} onChange={() => handleCheckboxChange('bankDetails')} />} 
+                                            label="Bank Details" 
+                                        />
+                                    </TableCell>
+                                    <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                        <FormControlLabel 
+                                            control={<Checkbox checked={formData.signature} onChange={() => handleCheckboxChange('signature')} />} 
+                                            label="Signature" 
+                                        />
+                                    </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    {['Mobile Number', 'E-mail ID', 'Address'].map((item) => (
-                                        <TableCell key={item} sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                            <FormControlLabel control={<Checkbox />} label={item} />
-                                        </TableCell>
-                                    ))}
+                                    <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                        <FormControlLabel 
+                                            control={<Checkbox checked={formData.mobileNumber} onChange={() => handleCheckboxChange('mobileNumber')} />} 
+                                            label="Mobile Number" 
+                                        />
+                                    </TableCell>
+                                    <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                        <FormControlLabel 
+                                            control={<Checkbox checked={formData.emailId} onChange={() => handleCheckboxChange('emailId')} />} 
+                                            label="E-mail ID" 
+                                        />
+                                    </TableCell>
+                                    <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
+                                        <FormControlLabel 
+                                            control={<Checkbox checked={formData.address} onChange={() => handleCheckboxChange('address')} />} 
+                                            label="Address" 
+                                        />
+                                    </TableCell>
                                 </TableRow>
                             </TableBody>
                         </Table>
@@ -97,7 +264,12 @@ const ISRForm = () => {
                                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                                             <FormControl size="small" sx={{ minWidth: 300 }}>
                                                 <InputLabel id="company-select-label">Select Company</InputLabel>
-                                                <Select labelId="company-select-label" defaultValue="" label="Select Company">
+                                                <Select 
+                                                    labelId="company-select-label" 
+                                                    value={formData.selectedCompany} 
+                                                    onChange={(e) => handleInputChange('selectedCompany', e.target.value)}
+                                                    label="Select Company"
+                                                >
                                                     <MenuItem value="" disabled>
                                                         Select Company
                                                     </MenuItem>
@@ -115,7 +287,7 @@ const ISRForm = () => {
                                         </Box>
                                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
                                             <Typography variant="caption" color="textSecondary">
-                                                No folio details. Click on Add Folio
+                                                {formData.folioNumber ? `Folio: ${formData.folioNumber}` : 'No folio details. Click on Add Folio'}
                                             </Typography>
                                         </Box>
                                     </TableCell>
@@ -136,6 +308,8 @@ const ISRForm = () => {
                                                 variant="outlined"
                                                 size="small"
                                                 placeholder="First/Sole Holder"
+                                                value={formData.firstHolder}
+                                                onChange={(e) => handleInputChange('firstHolder', e.target.value)}
                                                 fullWidth
                                             />
                                         </Box>
@@ -145,6 +319,8 @@ const ISRForm = () => {
                                                 variant="outlined"
                                                 size="small"
                                                 placeholder="Second Holder"
+                                                value={formData.secondHolder}
+                                                onChange={(e) => handleInputChange('secondHolder', e.target.value)}
                                                 fullWidth
                                             />
                                         </Box>
@@ -154,6 +330,8 @@ const ISRForm = () => {
                                                 variant="outlined"
                                                 size="small"
                                                 placeholder="Third Holder"
+                                                value={formData.thirdHolder}
+                                                onChange={(e) => handleInputChange('thirdHolder', e.target.value)}
                                                 fullWidth
                                             />
                                         </Box>
@@ -218,7 +396,7 @@ const ISRForm = () => {
                                         1
                                     </TableCell>
                                     <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", textAlign: "center", verticalAlign: "top" }}>
-                                        <Checkbox />
+                                        <Checkbox checked={formData.pan} onChange={() => handleCheckboxChange('pan')} />
                                     </TableCell>
                                     <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", verticalAlign: "top" }}>
                                         <Typography variant="body2" gutterBottom>
@@ -228,33 +406,51 @@ const ISRForm = () => {
                                             <Typography variant="body2" gutterBottom>
                                                 PAN
                                             </Typography>
-                                            {["First Holder PAN", "Second Holder PAN", "Third Holder PAN"].map((label, i) => (
-                                                <Box
-                                                    key={i}
-                                                    sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        gap: 1,
-                                                        mb: 1
-                                                    }}
-                                                >
-                                                    <Typography variant="body2" sx={{ minWidth: "20px" }}>
-                                                        {i + 1}
-                                                    </Typography>
-                                                    <TextField
-                                                        variant="outlined"
-                                                        size="small"
-                                                        placeholder={label}
-                                                        fullWidth
-                                                    />
-                                                </Box>
-                                            ))}
+                                            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                                                <Typography variant="body2" sx={{ minWidth: "20px" }}>1</Typography>
+                                                <TextField
+                                                    variant="outlined"
+                                                    size="small"
+                                                    placeholder="First Holder PAN"
+                                                    value={formData.panFirstHolder}
+                                                    onChange={(e) => handleInputChange('panFirstHolder', e.target.value)}
+                                                    fullWidth
+                                                />
+                                            </Box>
+                                            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                                                <Typography variant="body2" sx={{ minWidth: "20px" }}>2</Typography>
+                                                <TextField
+                                                    variant="outlined"
+                                                    size="small"
+                                                    placeholder="Second Holder PAN"
+                                                    value={formData.panSecondHolder}
+                                                    onChange={(e) => handleInputChange('panSecondHolder', e.target.value)}
+                                                    fullWidth
+                                                />
+                                            </Box>
+                                            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                                                <Typography variant="body2" sx={{ minWidth: "20px" }}>3</Typography>
+                                                <TextField
+                                                    variant="outlined"
+                                                    size="small"
+                                                    placeholder="Third Holder PAN"
+                                                    value={formData.panThirdHolder}
+                                                    onChange={(e) => handleInputChange('panThirdHolder', e.target.value)}
+                                                    fullWidth
+                                                />
+                                            </Box>
                                             <Typography variant="body2">
                                                 Whether it is Valid (linked to Aadhaar):
                                             </Typography>
                                             <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 1 }}>
-                                                <FormControlLabel control={<Checkbox />} label="Yes" />
-                                                <FormControlLabel control={<Checkbox />} label="No" />
+                                                <FormControlLabel 
+                                                    control={<Checkbox checked={formData.panValidLinked} onChange={() => handleCheckboxChange('panValidLinked')} />} 
+                                                    label="Yes" 
+                                                />
+                                                <FormControlLabel 
+                                                    control={<Checkbox checked={formData.panNotValidLinked} onChange={() => handleCheckboxChange('panNotValidLinked')} />} 
+                                                    label="No" 
+                                                />
                                             </Box>
                                         </Box>
                                     </TableCell>
@@ -283,7 +479,14 @@ const ISRForm = () => {
                                     </TableCell>
                                     <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", verticalAlign: "top" }}>
                                         <Typography variant="body2">Demat Account Number (Optional)</Typography>
-                                        <TextField variant="outlined" size="small" placeholder="NSDL DPID Client ID / CDSL Client ID" fullWidth />
+                                        <TextField 
+                                            variant="outlined" 
+                                            size="small" 
+                                            placeholder="NSDL DPID Client ID / CDSL Client ID" 
+                                            value={formData.dematAccount}
+                                            onChange={(e) => handleInputChange('dematAccount', e.target.value)}
+                                            fullWidth 
+                                        />
                                         <Typography variant="body2">Also provide Client Master List (CML) of your Demat Account, provided by the Depository Participant.</Typography>
                                     </TableCell>
                                     <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", verticalAlign: "top" }}>
@@ -302,7 +505,7 @@ const ISRForm = () => {
                                         3
                                     </TableCell>
                                     <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", textAlign: "center", verticalAlign: "top" }}>
-                                        <Checkbox />
+                                        <Checkbox checked={formData.address} onChange={() => handleCheckboxChange('address')} />
                                     </TableCell>
                                     <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", verticalAlign: "top" }}>
                                         <Typography variant="body2" gutterBottom>
@@ -321,12 +524,20 @@ const ISRForm = () => {
                                                 "For FII / sub account, Power of Attorney given by FII / sub-account to the Custodians (which are duly notarized and / or apostilled or consularised) that gives the registered address should be taken.",
                                                 "Proof of address in the name of the spouse accompanied with selfattested copy of Identity Proof of the spouse.",
                                                 "Client Master List (CML) of the Demat Account of the holder / claimant, provided by the Depository Participant."
-                                            ].map((item, index) => (
-                                                <Box key={index} sx={{ display: "flex", alignItems: "flex-start", mb: 1 }}>
-                                                    <Checkbox size="small" sx={{ mt: -0.5, mr: 1 }} />
-                                                    <Typography variant="body2">{item}</Typography>
-                                                </Box>
-                                            ))}
+                                            ].map((item, index) => {
+                                                const checkboxFields = ['uidAadhaar', 'passportLease', 'flatMaintenance', 'utilityBills', 'identityCard', 'fiiPowerOfAttorney', 'spouseProof', 'clientMasterList'];
+                                                return (
+                                                    <Box key={index} sx={{ display: "flex", alignItems: "flex-start", mb: 1 }}>
+                                                        <Checkbox 
+                                                            size="small" 
+                                                            sx={{ mt: -0.5, mr: 1 }} 
+                                                            checked={formData[checkboxFields[index]]}
+                                                            onChange={() => handleCheckboxChange(checkboxFields[index])}
+                                                        />
+                                                        <Typography variant="body2">{item}</Typography>
+                                                    </Box>
+                                                );
+                                            })}
                                         </Box>
                                     </TableCell>
                                     <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", verticalAlign: "top" }}>
@@ -344,24 +555,65 @@ const ISRForm = () => {
                                         4
                                     </TableCell>
                                     <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", textAlign: "center", verticalAlign: "top" }}>
-                                        <Checkbox />
+                                        <Checkbox checked={formData.bankDetails} onChange={() => handleCheckboxChange('bankDetails')} />
                                     </TableCell>
                                     <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", verticalAlign: "top" }}>
                                         <Typography variant="body2" gutterBottom>
                                             Bank details
                                         </Typography>
                                         <Box sx={{ pl: 1, mt: 1 }}>
-                                            {["IFSC Code", "Account Number", "Bank Name", "Branch Name"].map((item, index) => (
-                                                <Box key={index} sx={{ display: "flex", alignItems: "flex-start", mb: 1 }}>
-                                                    <TextField variant="outlined" size="small" placeholder={item} fullWidth />
-                                                </Box>
-                                            ))}
+                                            <Box sx={{ display: "flex", alignItems: "flex-start", mb: 1 }}>
+                                                <TextField 
+                                                    variant="outlined" 
+                                                    size="small" 
+                                                    placeholder="IFSC Code" 
+                                                    value={formData.ifscCode}
+                                                    onChange={(e) => handleInputChange('ifscCode', e.target.value)}
+                                                    fullWidth 
+                                                />
+                                            </Box>
+                                            <Box sx={{ display: "flex", alignItems: "flex-start", mb: 1 }}>
+                                                <TextField 
+                                                    variant="outlined" 
+                                                    size="small" 
+                                                    placeholder="Account Number" 
+                                                    value={formData.accountNumber}
+                                                    onChange={(e) => handleInputChange('accountNumber', e.target.value)}
+                                                    fullWidth 
+                                                />
+                                            </Box>
+                                            <Box sx={{ display: "flex", alignItems: "flex-start", mb: 1 }}>
+                                                <TextField 
+                                                    variant="outlined" 
+                                                    size="small" 
+                                                    placeholder="Bank Name" 
+                                                    value={formData.bankName}
+                                                    onChange={(e) => handleInputChange('bankName', e.target.value)}
+                                                    fullWidth 
+                                                />
+                                            </Box>
+                                            <Box sx={{ display: "flex", alignItems: "flex-start", mb: 1 }}>
+                                                <TextField 
+                                                    variant="outlined" 
+                                                    size="small" 
+                                                    placeholder="Branch Name" 
+                                                    value={formData.branchName}
+                                                    onChange={(e) => handleInputChange('branchName', e.target.value)}
+                                                    fullWidth 
+                                                />
+                                            </Box>
                                             <Typography variant="body2">
                                                 Provide the following:
                                             </Typography>
                                             <Box sx={{ mt: 1 }}>
-                                                <FormControlLabel control={<Checkbox />} label="Original cancelled cheque bearing the name of the security holder; OR" />
-                                                <FormControlLabel control={<Checkbox />} label="Bank passbook/statement attested by the Bank;" />
+                                                <FormControlLabel 
+                                                    control={<Checkbox checked={formData.cancelledCheque} onChange={() => handleCheckboxChange('cancelledCheque')} />} 
+                                                    label="Original cancelled cheque bearing the name of the security holder; OR" 
+                                                />
+                                                <FormControlLabel 
+                                                    control={<Checkbox checked={formData.bankPassbook} onChange={() => handleCheckboxChange('bankPassbook')} />} 
+                                                    label="Bank passbook/statement attested by the Bank;" 
+                                                />
                                             </Box>
                                         </Box>
                                     </TableCell>
@@ -380,14 +632,21 @@ const ISRForm = () => {
                                         5
                                     </TableCell>
                                     <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", textAlign: "center", verticalAlign: "top" }}>
-                                        <Checkbox />
+                                        <Checkbox checked={formData.emailId} onChange={() => handleCheckboxChange('emailId')} />
                                     </TableCell>
                                     <TableCell colSpan={2} sx={{ border: "1px solid rgba(0,0,0,0.12)", verticalAlign: "top" }}>
                                         <Typography variant="body2" gutterBottom>
                                             E-mail address #
                                         </Typography>
                                         <Box sx={{ pl: 1, mt: 1 }}>
-                                            <TextField variant="outlined" size="small" placeholder="eMail Address" fullWidth />
+                                            <TextField 
+                                                variant="outlined" 
+                                                size="small" 
+                                                placeholder="eMail Address" 
+                                                value={formData.emailAddress}
+                                                onChange={(e) => handleInputChange('emailAddress', e.target.value)}
+                                                fullWidth 
+                                            />
                                         </Box>
                                     </TableCell>
                                 </TableRow>
@@ -397,14 +656,21 @@ const ISRForm = () => {
                                         6
                                     </TableCell>
                                     <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", textAlign: "center", verticalAlign: "top" }}>
-                                        <Checkbox />
+                                        <Checkbox checked={formData.mobileNumber} onChange={() => handleCheckboxChange('mobileNumber')} />
                                     </TableCell>
                                     <TableCell colSpan={2} sx={{ border: "1px solid rgba(0,0,0,0.12)", verticalAlign: "top" }}>
                                         <Typography variant="body2" gutterBottom>
                                             Mobile #
                                         </Typography>
                                         <Box sx={{ pl: 1, mt: 1 }}>
-                                            <TextField variant="outlined" size="small" placeholder="Mobile Number" fullWidth />
+                                            <TextField 
+                                                variant="outlined" 
+                                                size="small" 
+                                                placeholder="Mobile Number" 
+                                                value={formData.mobileNumber}
+                                                onChange={(e) => handleInputChange('mobileNumber', e.target.value)}
+                                                fullWidth 
+                                            />
                                         </Box>
                                     </TableCell>
                                 </TableRow>
@@ -457,8 +723,8 @@ const ISRForm = () => {
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)", textAlign: "center" }}></TableCell>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
                                     <FormControl size="small" sx={{ minWidth: 150 }}>
-                                        <InputLabel id="company-select-label">Select Company</InputLabel>
-                                        <Select labelId="company-select-label" defaultValue="">
+                                        <InputLabel id="auth-company-select-label">Select Company</InputLabel>
+                                        <Select labelId="auth-company-select-label" value="">
                                             <MenuItem value="" disabled>Select Company</MenuItem>
                                             <MenuItem value="idbi">IDBI FLEXI BONDS 2A - 2AF</MenuItem>
                                             <MenuItem value="company2">IDBI FLEXI BONDS 2A - 2AM</MenuItem>
@@ -479,7 +745,7 @@ const ISRForm = () => {
                                     <TextField variant="outlined" size="small" placeholder="From - To" fullWidth />
                                 </TableCell>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                    <Button variant="contained" color="primary" sx={{ textTransform: 'none' }} size="small">Add</Button>
+                                    <Button variant="contained" color="primary" sx={{ textTransform: 'none' }} size="small" onClick={handleAddAuthorizationFolio}>Add</Button>
                                 </TableCell>
                             </TableRow>
                         </TableBody>
@@ -530,13 +796,34 @@ const ISRForm = () => {
                             <TableRow>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>Full Address</TableCell>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                    <TextField variant="outlined" size="small" placeholder="Address Line 1" fullWidth />
+                                    <TextField 
+                                        variant="outlined" 
+                                        size="small" 
+                                        placeholder="Address Line 1" 
+                                        value={formData.holder1Address1}
+                                        onChange={(e) => handleInputChange('holder1Address1', e.target.value)}
+                                        fullWidth 
+                                    />
                                 </TableCell>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                    <TextField variant="outlined" size="small" placeholder="Address Line 1" fullWidth />
+                                    <TextField 
+                                        variant="outlined" 
+                                        size="small" 
+                                        placeholder="Address Line 1" 
+                                        value={formData.holder2Address1}
+                                        onChange={(e) => handleInputChange('holder2Address1', e.target.value)}
+                                        fullWidth 
+                                    />
                                 </TableCell>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                    <TextField variant="outlined" size="small" placeholder="Address Line 1" fullWidth />
+                                    <TextField 
+                                        variant="outlined" 
+                                        size="small" 
+                                        placeholder="Address Line 1" 
+                                        value={formData.holder3Address1}
+                                        onChange={(e) => handleInputChange('holder3Address1', e.target.value)}
+                                        fullWidth 
+                                    />
                                 </TableCell>
                             </TableRow>
 
@@ -544,13 +831,34 @@ const ISRForm = () => {
                             <TableRow>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}></TableCell>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                    <TextField variant="outlined" size="small" placeholder="Address Line 2" fullWidth />
+                                    <TextField 
+                                        variant="outlined" 
+                                        size="small" 
+                                        placeholder="Address Line 2" 
+                                        value={formData.holder1Address2}
+                                        onChange={(e) => handleInputChange('holder1Address2', e.target.value)}
+                                        fullWidth 
+                                    />
                                 </TableCell>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                    <TextField variant="outlined" size="small" placeholder="Address Line 2" fullWidth />
+                                    <TextField 
+                                        variant="outlined" 
+                                        size="small" 
+                                        placeholder="Address Line 2" 
+                                        value={formData.holder2Address2}
+                                        onChange={(e) => handleInputChange('holder2Address2', e.target.value)}
+                                        fullWidth 
+                                    />
                                 </TableCell>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                    <TextField variant="outlined" size="small" placeholder="Address Line 2" fullWidth />
+                                    <TextField 
+                                        variant="outlined" 
+                                        size="small" 
+                                        placeholder="Address Line 2" 
+                                        value={formData.holder3Address2}
+                                        onChange={(e) => handleInputChange('holder3Address2', e.target.value)}
+                                        fullWidth 
+                                    />
                                 </TableCell>
                             </TableRow>
 
@@ -558,13 +866,34 @@ const ISRForm = () => {
                             <TableRow>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}></TableCell>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                    <TextField variant="outlined" size="small" placeholder="Address Line 3" fullWidth />
+                                    <TextField 
+                                        variant="outlined" 
+                                        size="small" 
+                                        placeholder="Address Line 3" 
+                                        value={formData.holder1Address3}
+                                        onChange={(e) => handleInputChange('holder1Address3', e.target.value)}
+                                        fullWidth 
+                                    />
                                 </TableCell>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                    <TextField variant="outlined" size="small" placeholder="Address Line 3" fullWidth />
+                                    <TextField 
+                                        variant="outlined" 
+                                        size="small" 
+                                        placeholder="Address Line 3" 
+                                        value={formData.holder2Address3}
+                                        onChange={(e) => handleInputChange('holder2Address3', e.target.value)}
+                                        fullWidth 
+                                    />
                                 </TableCell>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-                                    <TextField variant="outlined" size="small" placeholder="Address Line 3" fullWidth />
+                                    <TextField 
+                                        variant="outlined" 
+                                        size="small" 
+                                        placeholder="Address Line 3" 
+                                        value={formData.holder3Address3}
+                                        onChange={(e) => handleInputChange('holder3Address3', e.target.value)}
+                                        fullWidth 
+                                    />
                                 </TableCell>
                             </TableRow>
 
@@ -574,30 +903,72 @@ const ISRForm = () => {
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
                                     <Grid container spacing={1}>
                                         <Grid item xs={6}>
-                                            <TextField variant="outlined" size="small" placeholder="City Name" fullWidth />
+                                            <TextField 
+                                                variant="outlined" 
+                                                size="small" 
+                                                placeholder="City Name" 
+                                                value={formData.holder1City}
+                                                onChange={(e) => handleInputChange('holder1City', e.target.value)}
+                                                fullWidth 
+                                            />
                                         </Grid>
                                         <Grid item xs={6}>
-                                            <TextField variant="outlined" size="small" placeholder="PIN Code" fullWidth />
+                                            <TextField 
+                                                variant="outlined" 
+                                                size="small" 
+                                                placeholder="PIN Code" 
+                                                value={formData.holder1PinCode}
+                                                onChange={(e) => handleInputChange('holder1PinCode', e.target.value)}
+                                                fullWidth 
+                                            />
                                         </Grid>
                                     </Grid>
                                 </TableCell>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
                                     <Grid container spacing={1}>
                                         <Grid item xs={6}>
-                                            <TextField variant="outlined" size="small" placeholder="City Name" fullWidth />
+                                            <TextField 
+                                                variant="outlined" 
+                                                size="small" 
+                                                placeholder="City Name" 
+                                                value={formData.holder2City}
+                                                onChange={(e) => handleInputChange('holder2City', e.target.value)}
+                                                fullWidth 
+                                            />
                                         </Grid>
                                         <Grid item xs={6}>
-                                            <TextField variant="outlined" size="small" placeholder="PIN Code" fullWidth />
+                                            <TextField 
+                                                variant="outlined" 
+                                                size="small" 
+                                                placeholder="PIN Code" 
+                                                value={formData.holder2PinCode}
+                                                onChange={(e) => handleInputChange('holder2PinCode', e.target.value)}
+                                                fullWidth 
+                                            />
                                         </Grid>
                                     </Grid>
                                 </TableCell>
                                 <TableCell sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
                                     <Grid container spacing={1}>
                                         <Grid item xs={6}>
-                                            <TextField variant="outlined" size="small" placeholder="City Name" fullWidth />
+                                            <TextField 
+                                                variant="outlined" 
+                                                size="small" 
+                                                placeholder="City Name" 
+                                                value={formData.holder3City}
+                                                onChange={(e) => handleInputChange('holder3City', e.target.value)}
+                                                fullWidth 
+                                            />
                                         </Grid>
                                         <Grid item xs={6}>
-                                            <TextField variant="outlined" size="small" placeholder="PIN Code" fullWidth />
+                                            <TextField 
+                                                variant="outlined" 
+                                                size="small" 
+                                                placeholder="PIN Code" 
+                                                value={formData.holder3PinCode}
+                                                onChange={(e) => handleInputChange('holder3PinCode', e.target.value)}
+                                                fullWidth 
+                                            />
                                         </Grid>
                                     </Grid>
                                 </TableCell>
@@ -612,12 +983,13 @@ const ISRForm = () => {
                     color="primary"
                     size="small"
                     startIcon={<DownloadIcon />}
+                    onClick={downloadPDF}
                     sx={{ textTransform: 'none', backgroundColor: '#3a4385' }}
                 >
                     Download PDF Form
                 </Button>
             </Box>
-            <AddFolio open={openFolioDialog} onClose={handleClose} />
+            <AddFolio open={openFolioDialog} onClose={handleClose} onSave={handleAddFolio} />
         </Box>
     );
 }
